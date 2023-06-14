@@ -67,7 +67,7 @@
           <manifest>
             <addClasspath>true</addClasspath>
             <classpathPrefix>lib/</classpathPrefix>
-            <mainClass>prueba_sms.Main</mainClass>
+            <mainClass>sms_ApiRest</mainClass>
           </manifest>
         </archive>
       </configuration>
