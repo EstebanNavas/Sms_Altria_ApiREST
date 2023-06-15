@@ -37,12 +37,15 @@ public class DBMailMarketing {
                 int xidCampaign = consultarIdCampaign(connection, xIdLocal);
                 int xIdPlantilla = consultarIdPlantilla(connection, xIdLocal);
                 
+                int xIdDcto= consultaIdDcto(connection, xIdLocal);
+                
                 consultaCreditoLocal(connection, xIdLocal);
                 consultaDebitoLocal(connection, xIdLocal);
                 
          
                 
-                ingresaReporte(connection, xIdLocal, xIdMaximoReporte, xidCampaign, xIdPlantilla, xnumerosCelular, xTextoSMS);
+                ingresaReporte(connection, xIdLocal, xIdMaximoReporte, xidCampaign, xIdPlantilla, xnumerosCelular, xTextoSMS, xIdDcto);
+                incrementarDebito(connection, xIdLocal, xIdDcto);
 
 
                 
@@ -272,7 +275,7 @@ public class DBMailMarketing {
 	
 	
 	
-	//CONSULTA CREDITO LOCAL
+	                                      //CONSULTA CREDITO LOCAL
 	public static int consultaCreditoLocal(Connection connection, int idLocal) throws SQLException {
 		
 		int creditoLocal = 0;
@@ -310,7 +313,7 @@ public class DBMailMarketing {
 	
 	
 	
-	 // CONSULTA DEBITO LOCAL 
+	                                   // CONSULTA DEBITO LOCAL 
 	public static int consultaDebitoLocal(Connection connection, int idLocal) throws SQLException {
 		
 		int debitoLocal = 0;
@@ -346,8 +349,90 @@ public class DBMailMarketing {
 	}
 	
 	
+	
+	
+	                                  // CONSULTA IdDcto LOCAL
+	public static int consultaIdDcto(Connection connection, int idLocal) throws SQLException {
+		
+		int idDcto = 0;
+		
+		
+		String queryCreditoLocal = "SELECT * FROM tblMailCredito WHERE idlocal = ? AND sistema = ? AND idCampaign = ?";
+		PreparedStatement statement = connection.prepareStatement(queryCreditoLocal);
+		
+		// Asignamos los valores de los parámetros en la consulta
+        statement.setInt(1, idLocal); // idlocal
+        statement.setString(2, "aquamovil"); // sistema
+        statement.setInt(3, 18); // idCampaign
+
+        // Ejecutamos la consulta y obtenemos el resultado
+        ResultSet resultSet = statement.executeQuery();
+
+        // Recorremos los resultados de la consulta
+        while (resultSet.next()) {
+ 
+        	idDcto = resultSet.getInt("idDcto");
+        	
+            
+
+            // Mostramos los valores por consola
+            System.out.println("idDcto: " + idDcto );
+        }
+
+        // Cerramos los recursos utilizados
+        resultSet.close();
+        statement.close();
+        
+		return idDcto;
+	}
+	
+	
+	
+		                         // GENERAMOS EL INSERT A LA TABLA tblMailCredito
+		public static boolean incrementarDebito(Connection connection, int xIdLocal, int xIdDcto)throws SQLException {
+
+			// Verificamos si la coenxión está cerrada, si es asi entonces se abre la conexión a la DB
+			if (connection.isClosed()) {
+				// Si la conexión está cerrada, la abrimos nuevamente
+				connection = conexionSQLMailMarketing.getConexionMailMarketing();
+			}
+
+		    // Consultamos el valor actual de la columna "debito" para el local especificado
+		    int debitoActual = 0;
+		    
+		    String selectStr = "SELECT debito FROM tblMailCredito WHERE IDLOCAL = ?";
+		    
+		    PreparedStatement selectStatement = connection.prepareStatement(selectStr);
+		    selectStatement.setInt(1, xIdLocal);
+		    ResultSet resultSet = selectStatement.executeQuery();
+		    
+		    if (resultSet.next()) {
+		        debitoActual = resultSet.getInt("debito");
+		    }
+		    resultSet.close();
+		    selectStatement.close();
+
+		    // Incrementamos el valor de "debito" en 1
+		    int nuevoDebito = debitoActual + 1;
+
+		    // Actualizamos el valor de "debito" en la tabla "tblMailCredito" para el local especificado
+		    String updateStr = "UPDATE tblMailCredito SET debito = ? WHERE IDLOCAL = ?";
+		    PreparedStatement updateStatement = connection.prepareStatement(updateStr);
+		    updateStatement.setInt(1, nuevoDebito);
+		    updateStatement.setInt(2, xIdLocal);
+		    updateStatement.executeUpdate();
+		    updateStatement.close();
+
+		    return true;
+		}
+		
+		
+		
+	
+	
+	
     											// GENERAMOS EL INSERT A LA TABLA TBLMAILMARKETINGREPORTE
-    public static boolean ingresaReporte(Connection connection, int xIdLocal, int xIdMaximoReporte, int xidCampaign, int xIdPlantilla, String xnumerosCelular, String xTextoSMS)throws SQLException  {
+    public static boolean ingresaReporte(Connection connection, int xIdLocal, int xIdMaximoReporte, int xidCampaign, int xIdPlantilla, String xnumerosCelular, String xTextoSMS, int xIdDcto)throws SQLException  {
     	
     	  // Verificamos si la coenxión está cerrada, si es asi entonces se abre la conexión a la DB
     	if (connection.isClosed()) {
@@ -375,7 +460,7 @@ public class DBMailMarketing {
     	
     	                       
     	String xSistema = "aquamovil"; 	
-    	int xidDcto = 0;									
+//    	int xidDcto = 0;									
     	int xidRequerimiento = 1;						
     	int xestado = 1;
 //    	String xdescripcion = "Envio SMS";
@@ -393,7 +478,7 @@ public class DBMailMarketing {
              statement.setString(2, xSistema);
              statement.setInt(3, xidCampaign);
              statement.setInt(4, xIdPlantilla);
-             statement.setInt(5, xidDcto);
+             statement.setInt(5, xIdDcto);
              statement.setInt(6, xidRequerimiento);
              statement.setString(7, xnumerosCelular);
              statement.setInt(8, xestado);

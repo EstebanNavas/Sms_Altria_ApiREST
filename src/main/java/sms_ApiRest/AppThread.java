@@ -56,6 +56,7 @@ public class AppThread implements Runnable {
 				    
 				    int xcreditoLocal = 0;
 				    int xdebitoLocal = 0;
+				    int xIdDcto = 0;
 
 				    try {
 			            
@@ -70,6 +71,8 @@ public class AppThread implements Runnable {
 			            
 			            xcreditoLocal = DBMailMarketing.consultaCreditoLocal(connectionMailMarketing, xIdLocal);
 			            xdebitoLocal = DBMailMarketing.consultaDebitoLocal(connectionMailMarketing, xIdLocal);
+			            xIdDcto = DBMailMarketing.consultaIdDcto(connectionMailMarketing, xIdLocal);
+			            
 			            
 			     
 
@@ -157,7 +160,9 @@ public class AppThread implements Runnable {
 						try {
 						
 							DBMailMarketing.ingresaReporte(connectionMailMarketing, xIdLocal, xIdMaximoReporte, xidCampaign,
-								xIdPlantilla, xNumerosCelularArr[i], textoSMS);
+								xIdPlantilla, xNumerosCelularArr[i], textoSMS, xIdDcto);
+							
+							DBMailMarketing.incrementarDebito(connectionMailMarketing, xIdLocal, xIdDcto);
 						
 						
 						}catch(SQLException e) {// Capturamos en el catch alguna excepción que pueda ocurrir al guardar el registro en la DB
