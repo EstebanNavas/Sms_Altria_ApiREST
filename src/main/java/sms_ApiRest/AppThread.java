@@ -41,6 +41,8 @@ public class AppThread implements Runnable {
 		     String fechaConRecargo = "";// aquamovil
 		     //String xTextoMensaje="";
 		     
+		    
+		     
 		        try {
 		        	
 			        // Obtenemos la conexión a la base de datos DBMailmarketing	  
@@ -51,6 +53,9 @@ public class AppThread implements Runnable {
 				    int xidCampaign = 0;
 				    int xIdPlantilla = 0;
 				    int xIdMaximoReporte = 0;
+				    
+				    int xcreditoLocal = 0;
+				    int xdebitoLocal = 0;
 
 				    try {
 			            
@@ -62,6 +67,11 @@ public class AppThread implements Runnable {
 			            xidCampaign = DBMailMarketing.consultarIdCampaign(connectionMailMarketing, xIdLocal);
 			            xIdPlantilla = DBMailMarketing.consultarIdPlantilla(connectionMailMarketing, xIdLocal);
 			            xIdMaximoReporte = DBMailMarketing.obtenerMaximoReporte(connectionMailMarketing);
+			            
+			            xcreditoLocal = DBMailMarketing.consultaCreditoLocal(connectionMailMarketing, xIdLocal);
+			            xdebitoLocal = DBMailMarketing.consultaDebitoLocal(connectionMailMarketing, xIdLocal);
+			            
+			     
 
 			        
 
@@ -83,6 +93,9 @@ public class AppThread implements Runnable {
 			                e.printStackTrace();
 			            }
 			        }
+				    
+				    
+				
 				    
 				    
 				    
@@ -115,8 +128,19 @@ public class AppThread implements Runnable {
 		            	System.out.println("Fecha con recargo es menor a la fecha actual: " + fechaConRecargo);
 		            	return;
 		            }
-		             
 		            
+		            
+		            
+		            
+		            // Validamos si el credito del local es mayor al debito 
+		            if(xcreditoLocal > xdebitoLocal) {
+		            	System.out.println("Credito suficiente para el envio del sms ");
+		            }else {
+		            	System.out.println("requiere recargar saldo local: " + xIdLocal);
+		            	return;
+		            }
+		            System.out.println("xcreditoLocal " + xcreditoLocal);
+		            System.out.println("xdebitoLocal " + xdebitoLocal);
 		            
 		 
 		            // Recorre array celulares , los textos los arma antes

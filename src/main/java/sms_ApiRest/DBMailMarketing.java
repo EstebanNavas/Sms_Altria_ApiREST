@@ -14,7 +14,7 @@ public class DBMailMarketing {
         // Obtenemos la conexión a la base de datos
     	
     	
-    	int xIdLocal = 100;
+    	int xIdLocal = 0;
     	String xnumerosCelular =null;
     	
     	
@@ -36,6 +36,9 @@ public class DBMailMarketing {
                 int xIdMaximoReporte = obtenerMaximoReporte(connection);
                 int xidCampaign = consultarIdCampaign(connection, xIdLocal);
                 int xIdPlantilla = consultarIdPlantilla(connection, xIdLocal);
+                
+                consultaCreditoLocal(connection, xIdLocal);
+                consultaDebitoLocal(connection, xIdLocal);
                 
          
                 
@@ -71,7 +74,7 @@ public class DBMailMarketing {
 	        }
         
         
-    }
+    }//Fin del main
 
                                              // EXTRAEMOS EL MENSAJE DE TEXTO 
     public static String consultarTextoSMS(Connection connection, int idLocal) throws SQLException {
@@ -82,7 +85,7 @@ public class DBMailMarketing {
         PreparedStatement statement = connection.prepareStatement(queryTextoSMS);
 
         // Asignamos los valores de los parámetros en la consulta
-        statement.setInt(1, 100); // idlocal
+        statement.setInt(1, idLocal); // idlocal
         statement.setString(2, "aquamovil"); // sistema
         statement.setInt(3, 18); // idCampaign
 
@@ -125,7 +128,7 @@ public class DBMailMarketing {
         PreparedStatement statement = connection.prepareStatement(queryFechayHora);
     	
         // Asignamos los valores de los parámetros en la consulta
-        statement.setInt(1, 100); // idlocal
+        statement.setInt(1, idLocal); // idlocal
         statement.setString(2, "aquamovil"); // sistema
         statement.setInt(3, 18); // idCampaign
     	
@@ -168,7 +171,7 @@ public class DBMailMarketing {
         PreparedStatement statement = connection.prepareStatement(queryTextoSMS);
 
         // Asignamos los valores de los parámetros en la consulta
-        statement.setInt(1, 100); // idlocal
+        statement.setInt(1, idLocal); // idlocal
         statement.setString(2, "aquamovil"); // sistema
         statement.setInt(3, 18); // idCampaign
 
@@ -205,7 +208,7 @@ public class DBMailMarketing {
         PreparedStatement statement = connection.prepareStatement(queryTextoSMS);
 
         // Asignamos los valores de los parámetros en la consulta
-        statement.setInt(1, 100); // idlocal
+        statement.setInt(1, idLocal); // idlocal
         statement.setString(2, "aquamovil"); // sistema
         statement.setInt(3, 18); // idCampaign
 
@@ -266,6 +269,81 @@ public class DBMailMarketing {
 		
 	}    
 	
+	
+	
+	
+	//CONSULTA CREDITO LOCAL
+	public static int consultaCreditoLocal(Connection connection, int idLocal) throws SQLException {
+		
+		int creditoLocal = 0;
+		
+		
+		String queryCreditoLocal = "SELECT * FROM tblMailCredito WHERE idlocal = ? AND sistema = ? AND idCampaign = ?";
+		PreparedStatement statement = connection.prepareStatement(queryCreditoLocal);
+		
+		// Asignamos los valores de los parámetros en la consulta
+        statement.setInt(1, idLocal); // idlocal
+        statement.setString(2, "aquamovil"); // sistema
+        statement.setInt(3, 18); // idCampaign
+
+        // Ejecutamos la consulta y obtenemos el resultado
+        ResultSet resultSet = statement.executeQuery();
+
+        // Recorremos los resultados de la consulta
+        while (resultSet.next()) {
+ 
+        	creditoLocal = resultSet.getInt("credito");
+        	
+            
+
+            // Mostramos los valores por consola
+            System.out.println("creditoLocal: " + creditoLocal );
+        }
+
+        // Cerramos los recursos utilizados
+        resultSet.close();
+        statement.close();
+        
+		return creditoLocal;
+	}
+	
+	
+	
+	
+	 // CONSULTA DEBITO LOCAL 
+	public static int consultaDebitoLocal(Connection connection, int idLocal) throws SQLException {
+		
+		int debitoLocal = 0;
+		
+		
+		String queryCreditoLocal = "SELECT * FROM tblMailCredito WHERE idlocal = ? AND sistema = ? AND idCampaign = ?";
+		PreparedStatement statement = connection.prepareStatement(queryCreditoLocal);
+		
+		// Asignamos los valores de los parámetros en la consulta
+        statement.setInt(1, idLocal); // idlocal
+        statement.setString(2, "aquamovil"); // sistema
+        statement.setInt(3, 18); // idCampaign
+
+        // Ejecutamos la consulta y obtenemos el resultado
+        ResultSet resultSet = statement.executeQuery();
+
+        // Recorremos los resultados de la consulta
+        while (resultSet.next()) {
+ 
+        	debitoLocal = resultSet.getInt("debito");
+        	
+            
+
+            // Mostramos los valores por consola
+            System.out.println("debitoLocal: " + debitoLocal );
+        }
+
+        // Cerramos los recursos utilizados
+        resultSet.close();
+        statement.close();
+        
+		return debitoLocal;
+	}
 	
 	
     											// GENERAMOS EL INSERT A LA TABLA TBLMAILMARKETINGREPORTE

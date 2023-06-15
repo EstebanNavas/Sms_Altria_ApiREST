@@ -18,8 +18,8 @@ public class bdaquamovil {
 	        Connection connection = conexionSQLaquamovil.getConexionAquamovil();
 	        
 	        
-	        int xIdLocal = 100;
-	        int xIdPeriodo=202304;
+	        int xIdLocal = 0;
+	        int xIdPeriodo=0;
 	               
 
 	        // Verificamos si la conexión es exitosa o no
