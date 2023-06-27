@@ -16,6 +16,7 @@ public class DBMailMarketing {
     	
     	int xIdLocal = 0;
     	String xnumerosCelular =null;
+    	int xidCampaigns = 0;
     	
     	
     	
@@ -26,16 +27,16 @@ public class DBMailMarketing {
             try {
                 // Llamamos al método consultarTextoSMS
             	
-                String xTextoSMS = consultarTextoSMS(connection, xIdLocal);
+                String xTextoSMS = consultarTextoSMS(connection, xIdLocal, xidCampaigns);
                 
-                String xFechaHora  = consultarFechayHora(connection, xIdLocal);
+                String xFechaHora  = consultarFechayHora(connection, xIdLocal, xidCampaigns);
                 
                 
              
                 
                 int xIdMaximoReporte = obtenerMaximoReporte(connection);
-                int xidCampaign = consultarIdCampaign(connection, xIdLocal);
-                int xIdPlantilla = consultarIdPlantilla(connection, xIdLocal);
+                int xidCampaign = consultarIdCampaign(connection, xIdLocal, xidCampaigns);
+                int xIdPlantilla = consultarIdPlantilla(connection, xIdLocal, xidCampaigns);
                 
                 int xIdDcto= consultaIdDcto(connection, xIdLocal);
                 
@@ -80,7 +81,7 @@ public class DBMailMarketing {
     }//Fin del main
 
                                              // EXTRAEMOS EL MENSAJE DE TEXTO 
-    public static String consultarTextoSMS(Connection connection, int idLocal) throws SQLException {
+    public static String consultarTextoSMS(Connection connection, int idLocal, int idCampaigns) throws SQLException {
         String textoSMS = "";
 
         // Ejecutamos una consulta parametrizada
@@ -90,7 +91,7 @@ public class DBMailMarketing {
         // Asignamos los valores de los parámetros en la consulta
         statement.setInt(1, idLocal); // idlocal
         statement.setString(2, "aquamovil"); // sistema
-        statement.setInt(3, 18); // idCampaign
+        statement.setInt(3, idCampaigns); // idCampaign
 
         // Ejecutamos la consulta y obtenemos el resultado
         ResultSet resultSet = statement.executeQuery();
@@ -123,7 +124,7 @@ public class DBMailMarketing {
     
                                                  // EXTRAEMOS LA FECHA Y HORA QUE ESTÁ PROGRAMADO EL ENVIO DEL SMS
     
-    public static String consultarFechayHora(Connection connection, int idLocal)throws SQLException  {
+    public static String consultarFechayHora(Connection connection, int idLocal, int idCampaigns)throws SQLException  {
     	String fechayHora = "";
     	
     	// Ejecutamos una consulta parametrizada
@@ -133,7 +134,7 @@ public class DBMailMarketing {
         // Asignamos los valores de los parámetros en la consulta
         statement.setInt(1, idLocal); // idlocal
         statement.setString(2, "aquamovil"); // sistema
-        statement.setInt(3, 18); // idCampaign
+        statement.setInt(3, idCampaigns); // idCampaign
     	
         // Ejecutamos la consulta y obtenemos el resultado
         ResultSet resultSet = statement.executeQuery();
@@ -166,7 +167,7 @@ public class DBMailMarketing {
     
     
       								// EXTRAEMOS IDCAMPAÑA
-    public static int consultarIdCampaign(Connection connection, int idLocal) throws SQLException {
+    public static int consultarIdCampaign(Connection connection, int idLocal, int idCampaigns) throws SQLException {
         int idCampaign = 0;
 
         // Ejecutamos una consulta parametrizada
@@ -176,7 +177,7 @@ public class DBMailMarketing {
         // Asignamos los valores de los parámetros en la consulta
         statement.setInt(1, idLocal); // idlocal
         statement.setString(2, "aquamovil"); // sistema
-        statement.setInt(3, 18); // idCampaign
+        statement.setInt(3, idCampaigns); // idCampaign
 
         // Ejecutamos la consulta y obtenemos el resultado
         ResultSet resultSet = statement.executeQuery();
@@ -203,7 +204,7 @@ public class DBMailMarketing {
     
     
     								//EXTRAEMOS EL ID DE PLANTILLA
-    public static int consultarIdPlantilla(Connection connection, int idLocal) throws SQLException {
+    public static int consultarIdPlantilla(Connection connection, int idLocal, int idCampaigns) throws SQLException {
         int idPlantilla = 0;
 
         // Ejecutamos una consulta parametrizada
@@ -213,7 +214,7 @@ public class DBMailMarketing {
         // Asignamos los valores de los parámetros en la consulta
         statement.setInt(1, idLocal); // idlocal
         statement.setString(2, "aquamovil"); // sistema
-        statement.setInt(3, 18); // idCampaign
+        statement.setInt(3, idCampaigns); // idCampaign
 
         // Ejecutamos la consulta y obtenemos el resultado
         ResultSet resultSet = statement.executeQuery();
@@ -263,6 +264,7 @@ public class DBMailMarketing {
         }
         
         //Cerramos para librar los recursos
+        
         resultSet.close();
         statement.close();
         

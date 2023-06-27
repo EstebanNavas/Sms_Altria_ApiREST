@@ -10,12 +10,14 @@ public class AppThread implements Runnable {
 	
     private int xIdLocal;
     private int xIdPeriodo;
+    private int xidCampaigns;
     
     
     // Creamos un cosntructor de la clase AppThread y le pasamos como parametros las varibales xIdLocal y xIdPeriodo
-    public AppThread(int xIdLocal, int xIdPeriodo) {
+    public AppThread(int xIdLocal, int xIdPeriodo, int xidCampaigns) {
         this.xIdLocal = xIdLocal;
         this.xIdPeriodo = xIdPeriodo;
+        this.xidCampaigns = xidCampaigns;
     }
 	
 
@@ -57,6 +59,7 @@ public class AppThread implements Runnable {
 				    int xcreditoLocal = 0;
 				    int xdebitoLocal = 0;
 				    int xIdDcto = 0;
+				    String xFechayHora = "";
 
 				    try {
 			            
@@ -64,10 +67,11 @@ public class AppThread implements Runnable {
 
 			           
 			            //Obtenemos la consultas a la base de datos BDMailMarketing con sus respectivos métodos 	
-			            textoSMS = DBMailMarketing.consultarTextoSMS(connectionMailMarketing, xIdLocal);  // Se obtiene el texto del SMS de la base de datos
-			            xidCampaign = DBMailMarketing.consultarIdCampaign(connectionMailMarketing, xIdLocal);
-			            xIdPlantilla = DBMailMarketing.consultarIdPlantilla(connectionMailMarketing, xIdLocal);
+			            textoSMS = DBMailMarketing.consultarTextoSMS(connectionMailMarketing, xIdLocal, xidCampaigns);  // Se obtiene el texto del SMS de la base de datos
+			            xidCampaign = DBMailMarketing.consultarIdCampaign(connectionMailMarketing, xIdLocal,xidCampaigns);
+			            xIdPlantilla = DBMailMarketing.consultarIdPlantilla(connectionMailMarketing, xIdLocal, xidCampaigns);
 			            xIdMaximoReporte = DBMailMarketing.obtenerMaximoReporte(connectionMailMarketing);
+			            xFechayHora = DBMailMarketing.consultarFechayHora(connectionMailMarketing, xIdLocal, xidCampaigns);
 			            
 			            xcreditoLocal = DBMailMarketing.consultaCreditoLocal(connectionMailMarketing, xIdLocal);
 			            xdebitoLocal = DBMailMarketing.consultaDebitoLocal(connectionMailMarketing, xIdLocal);
@@ -113,9 +117,20 @@ public class AppThread implements Runnable {
 		            
 		            
 		            // Reemplazamos los parámetros del texto anteriormente obtenidos en la variable textoSMS
-		            textoSMS = textoSMS.replaceFirst("xxx", razonSocial)
-		                               .replaceFirst("xxx", nombrePeriodo)
-		                               .replaceFirst("xxx", fechaConRecargo);
+		            switch (xidCampaigns) {
+		            case 18:
+		                textoSMS = textoSMS.replaceFirst("xxx", razonSocial)
+		                                   .replaceFirst("xxx", nombrePeriodo)
+		                                   .replaceFirst("xxx", fechaConRecargo);
+		                break;
+		            case 200:
+		                textoSMS = textoSMS.replaceFirst("xxx", razonSocial)
+		                                   .replaceFirst("xxx", xFechayHora);
+		                break;
+		            default:
+		                System.out.println("El idCampaingn no existe");
+		                break;
+		        }
 		            
 		            // Se cambian los "/" por "-" para que pueda tener un formato valido a la hora de verificar la fecha 
 		            fechaConRecargo = fechaConRecargo.replace("/", "-");

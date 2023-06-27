@@ -43,14 +43,15 @@ public class app {
 	public static void main(String[] args) {
 		
 		//Pasamos parametros directamente por el IDE y no por la consola
-//		int xIdLocal = 100; 
-//	    int xIdPeriodo = 202304; 
+		int xIdLocal = 100; 
+	    int xIdPeriodo = 202304; 
+	    int xidCampaigns = 200;
 		
-		 int xIdLocal = Integer.parseInt(args[0]);
-		 int xIdPeriodo = Integer.parseInt(args[1]);
+//		 int xIdLocal = Integer.parseInt(args[0]);
+//		 int xIdPeriodo = Integer.parseInt(args[1]);
 		    
 		// Creamos una instancia de la clase AppThread y utilizamos los argumentos xIdLocal y xIdPeriodo para inicializar las variables
-		AppThread appThread = new AppThread(xIdLocal, xIdPeriodo);
+		AppThread appThread = new AppThread(xIdLocal, xIdPeriodo, xidCampaigns);
 
 		// Creamos un objeto Thread y le pasamos la instancia de AppThread
 		Thread hilo = new Thread(appThread);
